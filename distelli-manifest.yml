@@ -3,8 +3,8 @@ ipcrm/cr1:
     - '*.tar.gz'
   PostInstall:
     - export DISTELLI_RELVERSION=$DISTELLI_RELVERSION
-    - tar zxvf tse-controlrepo-*
-    - rm -f tse-controlrepo-*.tar.gz
-    - mv tse-controlrepo-* $DISTELLI_RELVERSION
+    - tar zxvf control-repo.tar.gz
+    - rm -f control-repo.tar.gz
+    - mv control-repo $DISTELLI_RELVERSION
     - sudo chown pe-puppet.pe-puppet -R $DISTELLI_RELVERSION
     - sh -x $DISTELLI_RELVERSION/scripts/distelli/release_me.sh
