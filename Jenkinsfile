@@ -71,7 +71,6 @@ node('tse-control-repo') {
         }
         stash name:'cr-mod', includes: 'pkg/*.tar.gz'
       }
-
     }
   }
 }
@@ -118,10 +117,9 @@ def windows(){
 def runSpecTests(def platform){
   node('tse-slave-' + platform) {
     sshagent (credentials: ['jenkins-seteam-ssh']) {
-      checkout scm
       dir("cr"){
         unstash "cr-mod"
-        tar -zxvf pkg/*.tar.gz
+        tar -zxvf "pkg/*.tar.gz"
         "$platform"()
       }
     }
