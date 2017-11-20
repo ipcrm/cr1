@@ -103,17 +103,19 @@ try {
     )
   }
 
-  node('tse-slave-linux'){
-    withCredentials(
-      [ string(credentialsId: 'DISTELLI_API_TOKEN', variable: 'DISTELLI_API_TOKEN'), ]
-    ) {
-        withEnv([ "DISTELLI_API_TOKEN=${DISTELLI_API_TOKEN}", ]){
-          checkout scm
-          unstash "cr-mod"
-          ansiColor('xterm') {
-            sh 'sh -x ./scripts/distelli/after_build.sh'
+  stage('Push Release') {
+    node('tse-slave-linux'){
+      withCredentials(
+        [ string(credentialsId: 'DISTELLI_API_TOKEN', variable: 'DISTELLI_API_TOKEN'), ]
+      ) {
+          withEnv([ "DISTELLI_API_TOKEN=${DISTELLI_API_TOKEN}", ]){
+            checkout scm
+            unstash "cr-mod"
+            ansiColor('xterm') {
+              sh 'sh -x ./scripts/distelli/after_build.sh'
+            }
           }
-        }
+      }
     }
   }
 
