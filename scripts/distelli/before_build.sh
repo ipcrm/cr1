@@ -11,7 +11,7 @@ export PATH=$PATH:bin
 # Setting global Distelli Env Variables
 echo -e "\nSetting global Distelli environment variables\n"
 DISTELLI_USERNAME=ipcrm
-DISTELLI_API_URL="http://api.distelli.com/$DISTELLI_USERNAME"
+DISTELLI_API_URL="https://api.distelli.com/$DISTELLI_USERNAME"
 DISTELLI_APP_NAME="cr1"
 DISTELLI_CI_PROVIDER="jenkins"
 DISTELLI_BUILD_STATUS="Running"
