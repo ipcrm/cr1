@@ -6,7 +6,7 @@ echo -e "\n\nPushing the Distelli release\n"
 DISTELLI_USERNAME=ipcrm
 DISTELLI_API_URL="https://api.distelli.com/$DISTELLI_USERNAME"
 DISTELLI_APP_NAME="cr1"
-DISTELLI_TMP_RELEASE="DISTELLIrelease.$JOB_NAME.$BUILD_NUMBER.tmp"
+DISTELLI_TMP_RELEASE="DISTELLIrelease.$BUILD_NUMBER.tmp"
 DISTELLI_RESPONSE=$(distelli push -save-release "$DISTELLI_TMP_RELEASE")
 DISTELLI_RELEASE_VERSION=$(cat "$DISTELLI_TMP_RELEASE")
 DISTELLI_RESPONSE=$(rm "$DISTELLI_TMP_RELEASE")
@@ -20,7 +20,7 @@ DISTELLI_BUILD_STATUS="Success"
 # Preparing to update the build event with "Success" and build end time
 echo -e "\nPreparing to update build event in Distelli\n"
 DISTELLI_NOW=$(date -u +%Y-%m-%dT%H:%M:%S.0Z)
-DISTELLI_TMP_FILENAME="DISTELLI.$JOB_NAME.$BUILD_NUMBER.tmp"
+DISTELLI_TMP_FILENAME="DISTELLI.$BUILD_NUMBER.tmp"
 DISTELLI_BUILD_EVENT_ID=$(cat "$DISTELLI_TMP_FILENAME")
 DISTELLI_RESPONSE=$(rm "$DISTELLI_TMP_FILENAME")
 
