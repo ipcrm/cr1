@@ -1,6 +1,12 @@
 #!/bin/bash
 # This script will update the Build status
 
+# Install JQ
+[[ -d bin ]] || mkdir bin
+[[ -f bin/jq ]] || curl -Lo bin/jq 'https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64'
+chmod +x bin/jq
+export PATH=$PATH:bin
+
 DISTELLI_USERNAME=ipcrm
 DISTELLI_API_URL="https://api.distelli.com/$DISTELLI_USERNAME"
 DISTELLI_APP_NAME="cr1"

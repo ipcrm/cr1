@@ -1,6 +1,12 @@
 #!/bin/bash
 # This script will update the Build status
 
+# Install JQ
+[[ -d bin ]] || mkdir bin
+[[ -f bin/jq ]] || curl -Lo bin/jq 'https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64'
+chmod +x bin/jq
+export PATH=$PATH:bin
+
 # Push the release to Distelli with the Distelli CLI
 echo -e "\n\nPushing the Distelli release\n"
 DISTELLI_USERNAME=ipcrm
