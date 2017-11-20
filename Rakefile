@@ -20,8 +20,6 @@ PuppetLint.configuration.send('disable_documentation')
 
 PuppetLint::RakeTask.new :lint do |config|
   config.ignore_paths   = ["spec/**/*.pp", "pkg/**/*.pp", "bundle/**/*", "vendor/**/*", "modules/**/*"]
-  config.log_format     = '%{path}:%{linenumber}:%{KIND}: %{message}'
-  config.fix = true # Temp hack
 end
 
 Rake::Task[:spec_prep].enhance [:generate_fixtures]
