@@ -15,16 +15,16 @@ node('tse-control-repo') {
         }
       }
 
-      stage('Lint Control Repo'){
-        ansiColor('xterm') {
-          sh(script: '''
-            export PATH=$PATH:$HOME/.rbenv/bin
-            rbenv global 2.3.1
-            eval "$(rbenv init -)"
-            bundle exec rake lint
-          ''')
-        }
-      }
+//      stage('Lint Control Repo'){
+//        ansiColor('xterm') {
+//          sh(script: '''
+//            export PATH=$PATH:$HOME/.rbenv/bin
+//            rbenv global 2.3.1
+//            eval "$(rbenv init -)"
+//            bundle exec rake lint
+//          ''')
+//        }
+//      }
 
       stage('Syntax Check Control Repo'){
         ansiColor('xterm') {
