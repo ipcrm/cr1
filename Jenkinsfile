@@ -7,7 +7,7 @@ node('tse-slave-linux'){
       withEnv([ "DISTELLI_API_TOKEN=${DISTELLI_API_TOKEN}", ]){
         checkout scm
         ansiColor('xterm') {
-          sh './scripts/distelli/before_build.sh'
+          sh 'sh -x ./scripts/distelli/before_build.sh'
         }
       }
   }
@@ -111,7 +111,7 @@ try {
           checkout scm
           unstash "cr-mod"
           ansiColor('xterm') {
-            sh './scripts/distelli/after_build.sh'
+            sh 'sh -x ./scripts/distelli/after_build.sh'
           }
         }
     }
@@ -127,7 +127,7 @@ try {
         withEnv([ "DISTELLI_API_TOKEN=${DISTELLI_API_TOKEN}", ]){
           checkout scm
           ansiColor('xterm') {
-            sh './scripts/distelli/after_failure.sh'
+            sh 'sh -x ./scripts/distelli/after_failure.sh'
           }
         }
     }
