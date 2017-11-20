@@ -14,7 +14,7 @@ PuppetLint.configuration.send('relative')
 PuppetLint.configuration.send('disable_140chars')
 PuppetLint.configuration.send('disable_class_inherits_from_params_class')
 PuppetLint.configuration.send('disable_documentation')
-PuppetLint.configuration.ignore_paths = ["spec/**/*.pp", "pkg/**/*.pp", "bundle/**/*", "vendor/**/*"]
+PuppetLint.configuration.ignore_paths = ["spec/**/*.pp", "pkg/**/*.pp", "bundle/**/*", "vendor/**/*", "modules/**/*"]
 
 PuppetLint::RakeTask.new :lint do | config |
   config.fix = true
