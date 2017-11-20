@@ -11,7 +11,7 @@ PuppetSyntax.app_management = true
 PuppetSyntax.exclude_paths = ["site/**/plans/*","modules/**/*"]
 
 # Clear; see https://github.com/rodjek/puppet-lint/issues/331
-Rake::Taks[:lint].clear
+Rake::Task[:lint].clear
 PuppetLint.configuration.fail_on_warnings = true
 PuppetLint.configuration.send('relative')
 PuppetLint.configuration.send('disable_140chars')
