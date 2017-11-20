@@ -61,13 +61,15 @@ node('tse-control-repo') {
 
       stage('Build Artifact'){
         ansiColor('xterm') {
-          sh(script: '''
-            export PATH=$PATH:$HOME/.rbenv/bin
-            rbenv global 2.3.1
-            eval "$(rbenv init -)"
-            r10k puppetfile install
-            /opt/puppetlabs/puppet/bin/puppet module build
-          ''')
+          sshagent (credentials: ['jenkins-seteam-ssh']) {
+            sh(script: '''
+              export PATH=$PATH:$HOME/.rbenv/bin
+              rbenv global 2.3.1
+              eval "$(rbenv init -)"
+              r10k puppetfile install
+              /opt/puppetlabs/puppet/bin/puppet module build
+            ''')
+          }
         }
         stash name:'cr-mod', includes: 'pkg/*.tar.gz'
       }
