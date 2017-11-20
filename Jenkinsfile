@@ -58,6 +58,20 @@ node('tse-control-repo') {
           ''')
         }
       }
+
+      stage('Build Artifact'){
+        ansiColor('xterm') {
+          sh(script: '''
+            export PATH=$PATH:$HOME/.rbenv/bin
+            rbenv global 2.3.1
+            eval "$(rbenv init -)"
+            r10k puppetfile install
+            /opt/puppetlabs/puppet/bin/puppet module build
+          ''')
+        }
+        stash name:'cr-mod', includes: 'pkg/*.tar.gz'
+      }
+
     }
   }
 }
@@ -105,7 +119,11 @@ def runSpecTests(def platform){
   node('tse-slave-' + platform) {
     sshagent (credentials: ['jenkins-seteam-ssh']) {
       checkout scm
-      "$platform"()
+      dir("cr"){
+        unstash "cr-mod"
+        tar -zxvf pkg/*.tar.gz
+        "$platform"()
+      }
     }
   }
 }
