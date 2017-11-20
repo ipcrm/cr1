@@ -62,27 +62,6 @@ task :check_for_spec_tests do
   spec_gen
 end
 
-desc "Show PE Only Modules"
-task :pe_only_mods do
-  puts get_pe_modules
-end
-
-def get_pe_modules
-  # Query Puppet Forge for the latest list of PE-only modules
-  # Thanks to dan-wittenberg for the original logic on this!
-  modules = {}
-
-  url="https://forgeapi.puppetlabs.com/v3/modules?module_groups=pe_only"
-  r = RestClient.get url, { :accept => 'application/json', :charset => 'utf-8' }
-
-  JSON.parse(r.force_encoding("UTF-8"))['results'].each do |x|
-    name = x['current_release']['metadata']['name'].gsub('/','-')
-    modules[name] = "git@github.com:puppetlabs/#{name}.git"
-  end
-
-  modules
-end
-
 def spec_gen(create=false)
   exit_code = 0
   ['role','profile'].each do |m|
@@ -140,53 +119,14 @@ def build_fixtures(controlrepo)
   fail 'Could not load Puppetfile' unless puppetfile.load
   modules = puppetfile.modules
 
-  # Store PE Only Mods list
-  pe_only = get_pe_modules
-
   # Iterate over everything and seperate it out for the sake of readability
   symlinks = []
-  forge_modules = []
-  repositories = []
 
   modules.each do |mod|
-    # This logic could probably be cleaned up. A lot.
-    if mod.is_a? R10K::Module::Forge
-      if mod.expected_version.is_a?(Hash)
-        # Set it up as a symlink, because we are using local files in the Puppetfile
-        symlinks << {
-          'name' => mod.name,
-          'dir' => mod.expected_version[:path]
-        }
-      elsif mod.expected_version.is_a?(String)
-
-        # Verify if this is a PE mod or not
-        # if it is a PE only module; we need to set it up as a git repo for fixtures b/c of license issues
-        if pe_only.keys.include?(mod.title.gsub('/','-'))
-          # Its PE Only
-          repositories << {
-            'name' => mod.name,
-            'repo' => mod.instance_variable_get(:@remote) =~ /\.git/ ? mod.instance_variable_get(:@remote) : pe_only[mod.title],
-            # ^^ This isn't perfect, as some of the repo names don't match - but its a start
-            'ref' => mod.expected_version
-          }
-        else
-          # Set it up as a normal forge module
-          forge_modules << {
-            'name' => mod.name,
-            'repo' => mod.title,
-            'ref' => mod.expected_version
-          }
-        end
-
-      end
-    elsif mod.is_a? R10K::Module::Git
-      # Set it up as a git repo
-      repositories << {
-          'name' => mod.name,
-          'repo' => mod.instance_variable_get(:@remote),
-          'ref' => mod.version
-        }
-    end
+    symlinks << {
+      'name' => mod.name,
+      'dir' => '"#{source_dir}/modules/#{mod.name}"',
+    }
   end
 
   symlinks << {
