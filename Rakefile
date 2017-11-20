@@ -125,7 +125,7 @@ def build_fixtures(controlrepo)
   modules.each do |mod|
     symlinks << {
       'name' => mod.name,
-      'dir' => '"#{source_dir}/modules/#{mod.name}"',
+      'dir' => "\"\#\{source_dir\}/modules/#{mod.name}\"",
     }
   end
 
