@@ -1,93 +1,136 @@
 #!groovy
-node('tse-control-repo') {
-  sshagent (credentials: ['jenkins-seteam-ssh']) {
-    withEnv(['PATH+EXTRA=/usr/local/bin']) {
-      checkout scm
 
-      stage('Setup'){
+node('tse-slave-linux'){
+  withCredentials(
+    [ string(credentialsId: 'DISTELLI_API_TOKEN', variable: 'DISTELLI_API_TOKEN'), ]
+  ) {
+      withEnv([ "DISTELLI_API_TOKEN=${DISTELLI_API_TOKEN}", ]){
         ansiColor('xterm') {
-          sh(script: '''
-            export PATH=$PATH:$HOME/.rbenv/bin
-            rbenv global 2.3.1
-            eval "$(rbenv init -)"
-            bundle install
-          ''')
+          sh './scripts/distelli/before_build.sh'
         }
       }
+  }
+}
 
-      stage('Lint Control Repo'){
-        ansiColor('xterm') {
-          sh(script: '''
-            export PATH=$PATH:$HOME/.rbenv/bin
-            rbenv global 2.3.1
-            eval "$(rbenv init -)"
-            bundle exec rake lint
-          ''')
-        }
-      }
+try {
+  node('tse-control-repo') {
+    sshagent (credentials: ['jenkins-seteam-ssh']) {
+      withEnv(['PATH+EXTRA=/usr/local/bin']) {
+        checkout scm
 
-      stage('Syntax Check Control Repo'){
-        ansiColor('xterm') {
-          sh(script: '''
-            export PATH=$PATH:$HOME/.rbenv/bin
-            rbenv global 2.3.1
-            eval "$(rbenv init -)"
-            bundle exec rake syntax --verbose
-          ''')
-        }
-      }
-
-      stage('Validate Puppetfile in Control Repo'){
-        ansiColor('xterm') {
-          sh(script: '''
-            export PATH=$PATH:$HOME/.rbenv/bin
-            rbenv global 2.3.1
-            eval "$(rbenv init -)"
-            bundle exec rake r10k:syntax
-          ''')
-        }
-      }
-
-      stage('Validate Tests Exist'){
-        ansiColor('xterm') {
-          sh(script: '''
-            export PATH=$PATH:$HOME/.rbenv/bin
-            rbenv global 2.3.1
-            eval "$(rbenv init -)"
-            bundle exec rake check_for_spec_tests
-          ''')
-        }
-      }
-
-      stage('Build Artifact'){
-        ansiColor('xterm') {
-          sshagent (credentials: ['jenkins-seteam-ssh']) {
+        stage('Setup'){
+          ansiColor('xterm') {
             sh(script: '''
               export PATH=$PATH:$HOME/.rbenv/bin
               rbenv global 2.3.1
               eval "$(rbenv init -)"
-              r10k puppetfile install
-              tar --exclude='.git' -zcvf control-repo.tar.gz .
+              bundle install
             ''')
           }
         }
-        stash name:'cr-mod', includes: 'control-repo.tar.gz'
+
+        stage('Lint Control Repo'){
+          ansiColor('xterm') {
+            sh(script: '''
+              export PATH=$PATH:$HOME/.rbenv/bin
+              rbenv global 2.3.1
+              eval "$(rbenv init -)"
+              bundle exec rake lint
+            ''')
+          }
+        }
+
+        stage('Syntax Check Control Repo'){
+          ansiColor('xterm') {
+            sh(script: '''
+              export PATH=$PATH:$HOME/.rbenv/bin
+              rbenv global 2.3.1
+              eval "$(rbenv init -)"
+              bundle exec rake syntax --verbose
+            ''')
+          }
+        }
+
+        stage('Validate Puppetfile in Control Repo'){
+          ansiColor('xterm') {
+            sh(script: '''
+              export PATH=$PATH:$HOME/.rbenv/bin
+              rbenv global 2.3.1
+              eval "$(rbenv init -)"
+              bundle exec rake r10k:syntax
+            ''')
+          }
+        }
+
+        stage('Validate Tests Exist'){
+          ansiColor('xterm') {
+            sh(script: '''
+              export PATH=$PATH:$HOME/.rbenv/bin
+              rbenv global 2.3.1
+              eval "$(rbenv init -)"
+              bundle exec rake check_for_spec_tests
+            ''')
+          }
+        }
+
+        stage('Build Artifact'){
+          ansiColor('xterm') {
+            sshagent (credentials: ['jenkins-seteam-ssh']) {
+              sh(script: '''
+                export PATH=$PATH:$HOME/.rbenv/bin
+                rbenv global 2.3.1
+                eval "$(rbenv init -)"
+                r10k puppetfile install
+                tar --exclude='.git' -zcvf control-repo.tar.gz .
+              ''')
+            }
+          }
+          stash name:'cr-mod', includes: 'control-repo.tar.gz'
+        }
       }
     }
   }
-}
 
-stage('Run Spec Tests') {
-  parallel(
-    'linux::profile::spec': {
-      runSpecTests('linux')
-    },
-    'windows::profile::spec': {
-      runSpecTests('windows')
+  stage('Run Spec Tests') {
+    parallel(
+      'linux::profile::spec': {
+        runSpecTests('linux')
+      },
+      'windows::profile::spec': {
+        runSpecTests('windows')
+      }
+    )
+  }
+
+  node('tse-slave-linux'){
+    withCredentials(
+      [ string(credentialsId: 'DISTELLI_API_TOKEN', variable: 'DISTELLI_API_TOKEN'), ]
+    ) {
+        withEnv([ "DISTELLI_API_TOKEN=${DISTELLI_API_TOKEN}", ]){
+          ansiColor('xterm') {
+            sh './scripts/distelli/after_build.sh'
+          }
+        }
     }
-  )
-}
+  }
 
+
+} catch (error) {
+
+  node('tse-slave-linux'){
+    withCredentials(
+      [ string(credentialsId: 'DISTELLI_API_TOKEN', variable: 'DISTELLI_API_TOKEN'), ]
+    ) {
+        withEnv([ "DISTELLI_API_TOKEN=${DISTELLI_API_TOKEN}", ]){
+          ansiColor('xterm') {
+            sh './scripts/distelli/after_failure.sh'
+          }
+        }
+    }
+  }
+
+  throw error
+}
 
 // functions
 def linux(){
