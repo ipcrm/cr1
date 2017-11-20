@@ -92,6 +92,8 @@ stage('Run Spec Tests') {
 // functions
 def linux(){
   withEnv(['PATH+EXTRA=/usr/local/bin']) {
+    unstash "cr-mod"
+    sh(script: 'tar -zxvf control-repo.tar.gz')
     ansiColor('xterm') {
       sh(script: '''
         export PATH=$PATH:$HOME/.rbenv/bin:$HOME/.rbenv/shims
@@ -109,11 +111,15 @@ def linux(){
 def windows(){
   withEnv(['MODULE_WORKING_DIR=C:/tmp']) {
     ansiColor('xterm') {
-      sh(script: '''
-        bundle install
-        bundle exec rake spec_clean
-        bundle exec rake spec
-      ''')
+      dir("C:/cr"){
+        unstash "cr-mod"
+        sh(script: 'tar -zxvf control-repo.tar.gz')
+        sh(script: '''
+          bundle install
+          bundle exec rake spec_clean
+          bundle exec rake spec
+        ''')
+      }
     }
   }
 }
@@ -121,11 +127,7 @@ def windows(){
 def runSpecTests(def platform){
   node('tse-slave-' + platform) {
     sshagent (credentials: ['jenkins-seteam-ssh']) {
-      dir("C:/cr"){
-        unstash "cr-mod"
-        sh(script: 'tar -zxvf control-repo.tar.gz')
-        "$platform"()
-      }
+      "$platform"()
     }
   }
 }
