@@ -32,9 +32,8 @@ mod 'puppetlabs/reboot', '1.2.1'
 mod 'puppetlabs/registry', '1.1.4'
 mod 'puppetlabs/tomcat', '1.7.0'
 mod 'puppetlabs/vcsrepo', '1.5.0'
-mod 'sqlserver',
-  :git => 'git@github.com:puppetlabs/puppetlabs-sqlserver.git',
-  :ref => '1.2.0'
+
+
 mod 'puppetlabs-apt', '4.1.0'
 mod 'puppetlabs-facter_task', '0.1.3'
 
@@ -96,3 +95,7 @@ mod 'rgbank',
 mod 'bolt',
   :git => 'https://github.com/puppetlabs/bolt.git',
   :ref => '0.5.1'
+
+mod 'sqlserver',
+  :git => 'git@github.com:puppetlabs/puppetlabs-sqlserver.git',
+  :ref => '1.2.0'
