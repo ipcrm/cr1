@@ -26,16 +26,16 @@ node('tse-control-repo') {
 //        }
 //      }
 
-      stage('Syntax Check Control Repo'){
-        ansiColor('xterm') {
-          sh(script: '''
-            export PATH=$PATH:$HOME/.rbenv/bin
-            rbenv global 2.3.1
-            eval "$(rbenv init -)"
-            bundle exec rake syntax --verbose
-          ''')
-        }
-      }
+//      stage('Syntax Check Control Repo'){
+//        ansiColor('xterm') {
+//          sh(script: '''
+//            export PATH=$PATH:$HOME/.rbenv/bin
+//            rbenv global 2.3.1
+//            eval "$(rbenv init -)"
+//            bundle exec rake syntax --verbose
+//          ''')
+//        }
+//      }
 
       stage('Validate Puppetfile in Control Repo'){
         ansiColor('xterm') {
