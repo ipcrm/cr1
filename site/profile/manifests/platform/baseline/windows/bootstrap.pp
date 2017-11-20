@@ -37,7 +37,7 @@ class profile::platform::baseline::windows::bootstrap {
   registry::value { 'enable insecure winrm':
     key    => 'HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\WinRM\Service',
     value  => 'AllowUnencryptedTraffic',
-    data   => "1",
+    data   => '1',
     type   => 'dword',
     notify => Service['WinRM'],
   }
