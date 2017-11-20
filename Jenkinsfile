@@ -67,7 +67,7 @@ node('tse-control-repo') {
               rbenv global 2.3.1
               eval "$(rbenv init -)"
               r10k puppetfile install
-              /opt/puppetlabs/puppet/bin/puppet module build
+              puppet module build
             ''')
           }
         }
