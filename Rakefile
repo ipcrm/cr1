@@ -9,6 +9,9 @@ require 'rest-client'
 
 PuppetSyntax.app_management = true
 PuppetSyntax.exclude_paths = ["site/**/plans/*","modules/**/*"]
+
+# Clear; see https://github.com/rodjek/puppet-lint/issues/331
+Rake::Taks[:lint].clear
 PuppetLint.configuration.fail_on_warnings = true
 PuppetLint.configuration.send('relative')
 PuppetLint.configuration.send('disable_140chars')
