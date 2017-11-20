@@ -67,11 +67,11 @@ node('tse-control-repo') {
               rbenv global 2.3.1
               eval "$(rbenv init -)"
               r10k puppetfile install
-              puppet module build
+              tar -zcvf control-repo.tar.gz .
             ''')
           }
         }
-        stash name:'cr-mod', includes: 'pkg/*.tar.gz'
+        stash name:'cr-mod', includes: 'control-repo.tar.gz'
       }
     }
   }
