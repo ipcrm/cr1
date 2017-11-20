@@ -17,12 +17,12 @@ PuppetLint.configuration.send('relative')
 PuppetLint.configuration.send('disable_140chars')
 PuppetLint.configuration.send('disable_class_inherits_from_params_class')
 PuppetLint.configuration.send('disable_documentation')
-PuppetLint.configuration.ignore_paths = ["spec/**/*.pp", "pkg/**/*.pp", "bundle/**/*", "vendor/**/*", "modules/**/*"]
 
-PuppetLint::RakeTask.new :lint do | config |
-  config.fix = true
+PuppetLint::RakeTask.new :lint do |config|
+  config.ignore_paths   = ["spec/**/*.pp", "pkg/**/*.pp", "bundle/**/*", "vendor/**/*", "modules/**/*"]
+  config.log_format     = '%{path}:%{linenumber}:%{KIND}: %{message}'
+  config.fix = true # Temp hack
 end
-
 
 Rake::Task[:spec_prep].enhance [:generate_fixtures]
 
