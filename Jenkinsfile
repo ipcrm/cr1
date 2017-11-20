@@ -119,7 +119,7 @@ def runSpecTests(def platform){
     sshagent (credentials: ['jenkins-seteam-ssh']) {
       dir("cr"){
         unstash "cr-mod"
-        tar -zxvf "pkg/*.tar.gz"
+        sh(script: 'tar -zxvf "pkg/*.tar.gz"')
         "$platform"()
       }
     }
