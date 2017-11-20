@@ -15,27 +15,27 @@ node('tse-control-repo') {
         }
       }
 
-//      stage('Lint Control Repo'){
-//        ansiColor('xterm') {
-//          sh(script: '''
-//            export PATH=$PATH:$HOME/.rbenv/bin
-//            rbenv global 2.3.1
-//            eval "$(rbenv init -)"
-//            bundle exec rake lint
-//          ''')
-//        }
-//      }
+      stage('Lint Control Repo'){
+        ansiColor('xterm') {
+          sh(script: '''
+            export PATH=$PATH:$HOME/.rbenv/bin
+            rbenv global 2.3.1
+            eval "$(rbenv init -)"
+            bundle exec rake lint
+          ''')
+        }
+      }
 
-//      stage('Syntax Check Control Repo'){
-//        ansiColor('xterm') {
-//          sh(script: '''
-//            export PATH=$PATH:$HOME/.rbenv/bin
-//            rbenv global 2.3.1
-//            eval "$(rbenv init -)"
-//            bundle exec rake syntax --verbose
-//          ''')
-//        }
-//      }
+      stage('Syntax Check Control Repo'){
+        ansiColor('xterm') {
+          sh(script: '''
+            export PATH=$PATH:$HOME/.rbenv/bin
+            rbenv global 2.3.1
+            eval "$(rbenv init -)"
+            bundle exec rake syntax --verbose
+          ''')
+        }
+      }
 
       stage('Validate Puppetfile in Control Repo'){
         ansiColor('xterm') {
@@ -121,7 +121,7 @@ def windows(){
 def runSpecTests(def platform){
   node('tse-slave-' + platform) {
     sshagent (credentials: ['jenkins-seteam-ssh']) {
-      dir("cr"){
+      dir("C:/cr"){
         unstash "cr-mod"
         sh(script: 'tar -zxvf control-repo.tar.gz')
         "$platform"()
