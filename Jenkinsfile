@@ -67,7 +67,7 @@ node('tse-control-repo') {
               rbenv global 2.3.1
               eval "$(rbenv init -)"
               r10k puppetfile install
-              tar -zcvf control-repo.tar.gz .
+              tar --exclude='.git' -zcvf control-repo.tar.gz .
             ''')
           }
         }
@@ -99,6 +99,7 @@ def linux(){
         rbenv global 2.3.1
         gem install bundle
         bundle install
+        bundle exec rake spec_clean
         bundle exec rake spec
       ''')
     }
@@ -110,6 +111,7 @@ def windows(){
     ansiColor('xterm') {
       sh(script: '''
         bundle install
+        bundle exec rake spec_clean
         bundle exec rake spec
       ''')
     }
